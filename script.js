@@ -168,20 +168,24 @@ const clickedLinkText = evt.target.textContent.trim();
 const link = menuLinks.find(l => l.text === clickedLinkText);
 
 if (!evt.target.classList.contains("active")) {
-if (link && link.subLinks) {
+subMenuEl.style.top = "0";// Hide the submenu for ABOUT which doesn't have one anyway
+
+  // if (link && link.subLinks) {
 
   // a. Set the CSS top property of subMenuEl to the value stored in the --sub-menu-top CSS custom property.
   subMenuEl.style.top = "var(--sub-menu-top)";  
 // Corrected to "100%" to show the submenu below the top menu
 
-  subMenuEl.style.top = "100%"; 
+  // subMenuEl.style.top = "100%"; 
  buildSubmenu(link.subLinks);
   // b. Otherwise, set the CSS top property of subMenuEl to 0.
 
  }else {
+  if (link && link.subLinks) {
+    // subMenuEl.style.top = "0";// Hide the submenu for ABOUT which doesn't have one anyway
+   subMenuEl.style.top = "100%"; 
+   buildSubmenu(link.subLinks);
   
-    subMenuEl.style.top = "0";// Hide the submenu for ABOUT which doesn't have one anyway
-  }   
 
   
 // 2. If the clicked <a> element already has a class of "active" (it was active when clicked), set the CSS top property of subMenuEl to 0. 
@@ -192,7 +196,8 @@ if (link && link.subLinks) {
 } else {
   subMenuEl.style.top = "0";// Hide the submenu
 }
-
+ }
+ 
 
 });
 
@@ -205,7 +210,7 @@ if (link && link.subLinks) {
 // The submenu needs to be dynamic based on the clicked link. To facilitate that, we will create a helper function called buildSubmenu that does the following:
 
 
-// Clear the current contents of subMenuEl.
+// Clear the current contents of subMenuEl. 
 function buildSubmenu(subLinks) {//helper function
   subMenuEl.innerHTML = ""; 
 
@@ -224,11 +229,11 @@ function buildSubmenu(subLinks) {//helper function
 // Append the new element to the subMenuEl.
     subMenuEl.appendChild(anchor);
   } 
+
 }
 
-
 // Once you have created your helper function, include it in the event listener within the same logic that shows the submenu, remembering to pass the array of sub-links as an argument.
- if (link.subLinks) {
+ if (link.subLinks) {//this is outside of for loop above whic h is why link is undefined.
 buildSubmenu(link.subLinks);
  } else {
   subMenuEl.style.top = "0";
