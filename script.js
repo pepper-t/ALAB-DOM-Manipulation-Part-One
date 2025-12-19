@@ -69,7 +69,7 @@ topMenuEl.classList.add("flex-around");
 // console.log(topMenuEl);
 // Part 3//////////////////////////////////////////////////////////////////////////
 
-// To continue: (lines 1-7 provided for Part 3)
+// To continue: (menuLinks lines 1-7 provided for Part 3)
 
 // 1.   Iterate over the entire menuLinks array and for each "link" object:
 for (let link of menuLinks) {
@@ -87,7 +87,7 @@ for (let link of menuLinks) {
 }
 
 // ||||||||||||||||||||||||||||||||
-// DOM Manipulation Part Two|||||||
+// DOM MANIPULATION PART TWO|||||||
 // |||||||||||||||||||||||||||||||||
 
 // Part 3 - Creating the Sub Menu//////////////////////////////////////////////
@@ -128,23 +128,20 @@ evt.preventDefault();
 
 
 // 4.The second line of code of the function should immediately return if the element clicked was not an <a> element.
-if (evt.target.tagName !== "a") {
+if (evt.target.tagName !== "A") {
   return;
 }
 
 // 5. Log the content of the <a> to verify the handler is working.
 console.log(evt.target.textContent);
+ 
 
-});
 
 
 // 6. The event listener should add the active class to the <a> element that was clicked, unless it was already active, in which case it should remove it.
 
-anchor.addEventListener("click", function(evt) {
-  evt.preventDefault();
-});
 
-if (evt.target.classList.contains("active")) {
+if (evt.target.classList.contains("active")) {//SAID ANCHOR WAS NOT DEFINED THEN 
   evt.target.classList.remove("active");
 } else {
   evt.target.classList.add("active");
@@ -154,38 +151,54 @@ topMenuEl.querySelectorAll("a").forEach(link => {
   if (link !== evt.target) {
     link.classList.remove("active");
   }
+
 });
 
 
-// Part 5: Adding Submenu Interaction//////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////
+// PART 5 -ADDING SUBMENU INTERACTION//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
 
 // Within the same event listener, we want to toggle the submenu between active and non-active states. First, we will set the submenu to show or hide itself depending on the menu state:
 
 // 1. Within the event listener, if the clicked <a> element does not yet have a class of "active" (it was inactive when clicked): 
-if (!evt.target.classList.contains("active")) {
+const clickedLinkText = evt.target.textContent.trim();
+const link = menuLinks.find(l => l.text === clickedLinkText);
 
-// a. Set the CSS top property of subMenuEl to the value stored in the --sub-menu-top CSS custom property.
+if (!evt.target.classList.contains("active")) {
+if (link && link.subLinks) {
+
+  // a. Set the CSS top property of subMenuEl to the value stored in the --sub-menu-top CSS custom property.
   subMenuEl.style.top = "var(--sub-menu-top)";  
- 
+// Corrected to "100%" to show the submenu below the top menu
+
+  subMenuEl.style.top = "100%"; 
+ buildSubmenu(link.subLinks);
   // b. Otherwise, set the CSS top property of subMenuEl to 0.
 
-   }else {
+ }else {
   
-    subMenuEl.style.top = "0";
+    subMenuEl.style.top = "0";// Hide the submenu for ABOUT which doesn't have one anyway
   }   
 
+  
+// 2. If the clicked <a> element already has a class of "active" (it was active when clicked), set the CSS top property of subMenuEl to 0. 
+  
+// Hint: This will effectively hide the submenu.
+
+  
+} else {
+  subMenuEl.style.top = "0";// Hide the submenu
+}
+
+
+});
 
 // Hint: Caching the "link" object will come in handy for passing its subLinks array later.
 
 
-
-
-// 2. If the clicked <a> element already has a class of "active" (it was active when clicked), set the CSS top property of subMenuEl to 0.
-if (evt.target.classList.contains("active")) {
-  subMenuEl.style.top = "0";
-} 
-
-// Hint: This will effectively hide the submenu.
 
 // Progress Check - Ensure that clicking CATALOG, ORDERS, etc. shows the submenu bar, and that clicking them again hides it. Clicking ABOUT should not show the submenu bar.
 
@@ -215,36 +228,76 @@ function buildSubmenu(subLinks) {//helper function
 
 
 // Once you have created your helper function, include it in the event listener within the same logic that shows the submenu, remembering to pass the array of sub-links as an argument.
-  if (link.subLinks) {
-    buildSubmenu(link.subLinks);
-  } 
+ if (link.subLinks) {
+buildSubmenu(link.subLinks);
+ } else {
+  subMenuEl.style.top = "0";
+ }   if (link.subLinks) {
+   buildSubmenu(link.subLinks);
+ } else {
+   subMenuEl.style.top = "0";
+ }
 
-/*Progress Check - Here is what the page should look like so far:
-
-The menu is almost complete! Now, we need to add interactions to the submenu items themselves:
-
-Attach a delegated 'click' event listener to subMenuEl.
-
-The first line of code of the event listener function should call the event object's preventDefault() method.
-
-The second line of code within the function should immediately return if the element clicked was not an <a> element.
-
-Log the content of the <a> to verify the handler is working.
-
-Next, the event listener should set the CSS top property of subMenuEl to 0.
-
-Remove the active class from each <a> element in topMenuLinks.
-
-Update the contents of mainEl, within an <h1>, to the contents of the <a> element clicked within subMenuEl.
-
-If the ABOUT link is clicked, an <h1>About</h1> should be displayed.
+//event.target & evt.object
 
 
 
+
+// Progress Check - Here is what the page should look like so far: The page should now have a top menu with links that show or hide a submenu when clicked. The submenu should display the appropriate links based on the clicked link.
+
+
+// The menu is almost complete! Now, we need to add interactions to the submenu items themselves:
+
+
+// Attach a delegated 'click' event listener to subMenuEl.
+
+
+subMenuEl.addEventListener("click", function(evt) {
+
+// The first line of code of the event listener function should call the event object's preventDefault() method.
+
+   evt.preventDefault();
+})
+
+// The second line of code within the function should immediately return if the element clicked was not an <a> element.
+
+   if (evt.target.tagName !== "A") {
+    
+   }  
+
+// Log the content of the <a> to verify the handler is working.
+    console.log(evt.target.textContent);  
+
+// Next, the event listener should set the CSS top property of subMenuEl to 0.
+
+subMenuEl.style.top = "0";
+
+// Remove the active class from each <a> element in topMenuLinks. 
+topMenuLinks.forEach(link => {
+  link.classList.remove("active");
+});
+
+// Update the contents of mainEl, within an <h1>, to the contents of the <a> element clicked within subMenuEl.
+
+mainEl.innerHTML = `<h1>${evt.target.textContent}</h1>`;
+
+
+// If the ABOUT link is clicked, an <h1>About</h1> should be displayed. 
+
+
+
+
+/*
 Part 6: Completion and Code Review
 
 Test your menu! If it works in a way that makes sense, you have likely been successful. Your instructor has been provided with a completed version of this assignment, and time permitting, will do a brief code review so that you can make comparisons with your own approaches.
 
+
 Remember, functionality is key! There are many ways to arrive at the same solution in development, and often the difference in syntax between two solutions is inconsequential. If it works, good job!
 
 Remember to submit the link to this part of the project to Canvas using the submission instructions at the beginning of this document.*/
+
+
+
+
+
